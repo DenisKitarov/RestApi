@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS coupon_db;
+
+CREATE DATABASE coupon_db;

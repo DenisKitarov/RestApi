@@ -1,0 +1,89 @@
+DROP TABLE IF EXISTS User_Role;
+DROP TABLE IF EXISTS User_Coupons;
+DROP TABLE IF EXISTS Reviews_Coupons;
+DROP TABLE IF EXISTS Reviews;
+DROP TABLE IF EXISTS Coupons;
+DROP TABLE IF EXISTS Roles;
+DROP TABLE IF EXISTS Users;
+
+
+CREATE TABLE Users (
+	"id" serial NOT NULL,
+	"email" VARCHAR(255) NOT NULL UNIQUE,
+	"password" VARCHAR(255) NOT NULL,
+	"first_name" VARCHAR(255)  NULL,
+	"last_name" VARCHAR(255)  NULL,
+	"phone" VARCHAR(255)  NULL UNIQUE,
+	"city" VARCHAR(255)  NULL,
+	"role" VARCHAR(255)  NULL,
+	CONSTRAINT "User_pk" PRIMARY KEY ("id")
+
+);
+
+
+
+CREATE TABLE Roles (
+	"id" serial NOT NULL,
+	"name" integer NOT NULL UNIQUE,
+	CONSTRAINT "Role_pk" PRIMARY KEY ("id")
+
+);
+
+
+CREATE TABLE Coupons (
+	"id" serial NOT NULL,
+	"discount" integer  NULL,
+	"name" VARCHAR(255)  NULL,
+	"amount" integer  NULL,
+	"start_date" DATE  NULL,
+	"end_date" DATE  NULL,
+	CONSTRAINT "Coupons_pk" PRIMARY KEY ("id")
+
+);
+
+
+CREATE TABLE Reviews (
+	"id" serial NOT NULL,
+	"comment" VARCHAR(255)  NULL,
+	"rate" integer  NULL,
+	"date" DATE  NULL,
+	"coupon_id" integer  NULL,
+	"user_id" integer  NULL,
+	CONSTRAINT "Reviews_pk" PRIMARY KEY ("id"),
+	CONSTRAINT "Reviews_fk0" FOREIGN KEY ("coupon_id") REFERENCES public.Coupons("id") ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT "Reviews_fk1" FOREIGN KEY ("user_id") REFERENCES public.Users("id") ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+CREATE TABLE User_Role (
+	"id" serial NOT NULL,
+	"user_id" integer  NULL,
+	"role_id" integer  NULL,
+	CONSTRAINT "UserRole_pk" PRIMARY KEY ("id"),
+   CONSTRAINT "UserRole_fk0" FOREIGN KEY ("user_id") REFERENCES public.Users("id") ON DELETE SET NULL ON UPDATE CASCADE,
+   CONSTRAINT "UserRole_fk1" FOREIGN KEY ("role_id") REFERENCES public.Roles("id")  ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+
+CREATE TABLE User_Coupons (
+	"id" serial NOT NULL,
+	"date_used" DATE  NULL,
+	"is_used" BOOLEAN  NULL,
+	"coupon_id" integer  NULL,
+	"user_id" integer  NULL,
+	CONSTRAINT "UserCoupons_pk" PRIMARY KEY ("id"),
+	CONSTRAINT "UserCoupons_fk0" FOREIGN KEY ("coupon_id") REFERENCES public.Coupons("id") ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT "UserCoupons_fk1" FOREIGN KEY ("user_id") REFERENCES public.Reviews("id") ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+
+
+CREATE TABLE Reviews_Coupons (
+	"id" serial NOT NULL,
+	"coupon_id" integer  NULL,
+	"review_id" integer  NULL,
+	CONSTRAINT "ReviewsCoupon_pk" PRIMARY KEY ("id"),
+	CONSTRAINT "ReviewsCoupon_fk0" FOREIGN KEY ("coupon_id") REFERENCES public.Coupons("id") ON DELETE SET NULL ON UPDATE CASCADE ,
+  CONSTRAINT "ReviewsCoupon_fk1" FOREIGN KEY ("review_id") REFERENCES public.Reviews("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
